@@ -1,13 +1,17 @@
-**Wordpress Container for Tredly**
+## Wordpress Container for Tredly
 
-For Tredly-Build Version 0.9.0
+Version 1.0.1 May 5 2016
 
-**Installation**
+## Installation
 
-This container requires Tredly-Host to build and run it, https://github.com/vuid-com/tredly-host
+Requires Tredly 0.10.0 <https://github.com/vuid-com/tredly-host> or later
 
-**Modifying container options**
+## Modifying container options
 
 By default, the container name is "wordpress". Change this by changing containerName in the Tredlyfile prior to building this container.
 
 Many other options can be changed in the Tredlyfile
+
+## License
+
+Tredly is released under the [MIT License](http://www.opensource.org/licenses/MIT).
