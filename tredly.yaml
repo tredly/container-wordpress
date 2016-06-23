@@ -1,0 +1,129 @@
+---
+  container:
+    name: "wordpress"
+    technicalOptions: {}
+    proxy:
+      layer4Proxy: false
+      ## **** CHANGE ME **** ##
+      ## These need to be updated based on your actual URL
+      layer7Proxy:
+        -
+          enableWebsocket: false
+          cert: null
+          maxFileSize: "10m"
+          redirects:
+            -
+              cert: null
+              url: "http://www.wordpress.tredly"
+          url: "wordpress.tredly"
+    replicate: false
+    startOrder: 1
+    operations:
+      onStop: []
+      onCreate:
+        -
+          type: "installPackage"
+          value: "mariadb55-server"
+        -
+          type: "installPackage"
+          value: "nginx"
+        -
+          type: "installPackage"
+          value: "php56"
+        -
+          type: "installPackage"
+          value: "mariadb55-client"
+        -
+          type: "installPackage"
+          value: "php56-mysql"
+        -
+          type: "installPackage"
+          value: "php56-xml"
+        -
+          type: "installPackage"
+          value: "php56-hash"
+        -
+          type: "installPackage"
+          value: "php56-gd"
+        -
+          type: "installPackage"
+          value: "php56-curl"
+        -
+          type: "installPackage"
+          value: "php56-tokenizer"
+        -
+          type: "installPackage"
+          value: "php56-zlib"
+        -
+          type: "installPackage"
+          value: "php56-zip"
+        -
+          type: "fileFolderMapping"
+          source: "/mysql/install.sql"
+          target: "/usr/local/"
+        -
+          type: "fileFolderMapping"
+          source: "/nginx/nginx.conf"
+          target: "/usr/local/etc/nginx/"
+        -
+          type: "fileFolderMapping"
+          source: "/php-fpm/php.ini"
+          target: "/usr/local/etc/"
+        -
+          type: "fileFolderMapping"
+          source: "/wordpress/wp-config.php"
+          target: "/usr/local/www/wordpress/"
+        -
+          type: "exec"
+          value: "sysrc nginx_enable=yes && service nginx start"
+        -
+          type: "exec"
+          value: "sysrc php_fpm_enable=yes && service php-fpm start"
+        -
+          type: "exec"
+          value: "sysrc mysql_enable=yes && service mysql-server start"
+        -
+          type: "exec"
+          value: "chmod 1777 /tmp"
+        -
+          type: "exec"
+          value: "cd /usr/local/ && mysql_install_db --user=mysql --basedir=/usr/local --basedir=/usr/local --datadir=/var/db/mysql"
+        -
+          type: "exec"
+          value: "mysql -uroot < /usr/local/install.sql"
+        -
+          type: "exec"
+          value: "cd /tmp && fetch http://wordpress.org/latest.tar.gz && tar xzvf /tmp/latest.tar.gz"
+        -
+          type: "exec"
+          value: "rm /tmp/latest.tar.gz"
+        -
+          type: "exec"
+          value: "cp -R /tmp/wordpress /usr/local/www"
+        -
+          type: "exec"
+          value: "rm -rf /tmp/wordpress"
+        -
+          type: "exec"
+          value: "chown -R www:www /usr/local/www/wordpress"
+    customDNS: []
+    firewall:
+      ipv4Whitelist: []
+      allowPorts:
+        tcp:
+          in:
+            - 80
+          out:
+            - 80
+            - 443
+        udp:
+          in: []
+          out:
+            - 53
+    buildOptions:
+      publish: true
+    compatibleWith: "1.0.0"
+    resourceLimits:
+      maxRam: "5120M"
+      maxCpu: "unlimited"
+      maxHdd: "10240M"
