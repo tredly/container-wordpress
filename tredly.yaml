@@ -122,7 +122,7 @@
             - 53
     buildOptions:
       publish: true
-    compatibleWith: "1.0.0"
+    compatibleWith: "1.1.0"
     resourceLimits:
       maxRam: "5120M"
       maxCpu: "unlimited"
